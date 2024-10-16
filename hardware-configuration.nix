@@ -12,8 +12,8 @@
       availableKernelModules = [ "xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
       kernelModules = [ ];
       luks.devices = {
-        "nix".device = "/dev/disk/by-uuid/f671c22f-ac30-4d02-8610-cc9b7f11bf59";
-        "swap".device = "/dev/disk/by-uuid/aba7d027-cf92-465b-8da1-5193f469dc86";
+        "nix".device = "/dev/disk/by-uuid/<nix-partition>";
+        "swap".device = "/dev/disk/by-uuid/<swap-partition>";
       };
     };
     kernelModules = [ "kvm-intel" ];
