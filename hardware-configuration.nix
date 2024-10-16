@@ -22,7 +22,7 @@
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/NixOS";
-      fsType = "btrfs";
+      fsType = "ext4";
     };
     "/boot" = {
       device = "/dev/disk/by-label/BOOT";
