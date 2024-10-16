@@ -8,8 +8,8 @@
 
   boot = {
     initrd.luks.devices = {
-      "nix".device = "/dev/disk/by-uuid/f671c22f-ac30-4d02-8610-cc9b7f11bf59";
-      "swap".device = "/dev/disk/by-uuid/aba7d027-cf92-465b-8da1-5193f469dc86";
+      "nix".device = "/dev/disk/by-uuid/<nix-partition>";
+      "swap".device = "/dev/disk/by-uuid/<swap-partition>";
     };
     kernelPackages = pkgs.linuxPackages_zen;
     loader.efi.canTouchEfiVariables = true;
@@ -32,17 +32,64 @@
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
     };
     systemPackages = with pkgs; [
+      atuin
+      bat
+      btop
+      bun
+      clang
+      deno
+      dust
+      efibootmgr
+      evcxr
+      fastfetch
+      fzf
+      git
+      gh
+      gnumake
+      go
+      gopls
+      lazygit
+      lsd
+      lua
+      lunarvim
+      nodejs_22
+      nvtopPackages.intel
+      pkg-config
+      python312
+      python312Packages.pynvim
+      ruff
+      rustup
+      ripgrep
+      starship
+      tealdeer
+      tk
+      tree-sitter
+      wasm-pack
+      yt-dlp
+      zellij
+      zoxide
+
+      audacity
       bottles
+      brave
       discord
+      ferium
+      handbrake
       haruna
       heroic
       kdePackages.koko
+      kdePackages.partitionmanager
       keepassxc
+      librewolf
       lutris
+      obsidian
       protonup
       sameboy
       spotify
+      sqlitebrowser
       ungoogled-chromium
+      usbutils
+      vscodium
       wezterm
       wine
       xclicker
@@ -56,10 +103,9 @@
 
   hardware = {
     bluetooth.enable = true;
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
+      enable32Bit = true;
     };
     steam-hardware.enable = true;
   };
@@ -78,6 +124,7 @@
       LC_TIME = "en_US.UTF-8";
     };
   };
+
   networking = {
     hostName = "APOLLO";
     networkmanager.enable = true;
@@ -150,60 +197,6 @@
       isNormalUser = true;
       description = "Sanguine";
       extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [
-        atuin
-        bat
-        btop
-        bun
-        clang
-        deno
-        dust
-        efibootmgr
-        evcxr
-        fastfetch
-        fzf
-        git
-        gh
-        gnumake
-        go
-        gopls
-        lazygit
-        lsd
-        lua
-        lunarvim
-        nodejs_22
-        nvtopPackages.intel
-        pkg-config
-        python312
-        python312Packages.pynvim
-        ruff
-        rustup
-        ripgrep
-        starship
-        tealdeer
-        tk
-        tree-sitter
-        wasm-pack
-        yt-dlp
-        zellij
-        zoxide
-
-        audacity
-        brave
-        ferium
-        handbrake
-        kdePackages.partitionmanager
-        librewolf
-        obsidian
-        sqlitebrowser
-        usbutils
-        vscodium
-      ];
-    };
-    users.lee = {
-      isNormalUser = true;
-      description = "Lee";
-      extraGroups = [ "networkmanager" ];
       packages = with pkgs; [];
     };
   };
@@ -223,6 +216,6 @@
       rebootWindow = { lower = "03:00"; upper = "05:30"; };
     };
     copySystemConfiguration = true;
-    stateVersion = "24.05";# Did you read the comment?
+    stateVersion = "24.11";# Did you read the comment?
   };
 }
