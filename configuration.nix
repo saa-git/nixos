@@ -8,12 +8,14 @@
 
   boot = {
     initrd.luks.devices = {
-      "nix".device = "/dev/disk/by-uuid/<nix-partition>";
-      "swap".device = "/dev/disk/by-uuid/<swap-partition>";
+      "nix".device = "/dev/disk/by-uuid/3eb4b259-03fc-4999-87c2-8dbe55b42a81";
+      "swap".device = "/dev/disk/by-uuid/72db6411-c8af-4a6b-a6ae-28a2b79bcae2";
     };
     kernelPackages = pkgs.linuxPackages_zen;
-    loader.efi.canTouchEfiVariables = true;
-    loader.systemd-boot.enable = true;
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+    };
   };
 
   documentation.man.man-db.enable = true;
@@ -28,19 +30,21 @@
       plasma-browser-integration
     ];
     sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
+      STEAM_EXTRA_COMPAT_TOOLS_PATH = "/home/reeph/.steam/root/compatibilitytools.d";
     };
     systemPackages = with pkgs; [
+      # TESTING
+      # CLIs
+      apple-cursor
       atuin
       bat
       btop
-      bun
       clang
       deno
       dust
       efibootmgr
       evcxr
+      evil-helix
       fastfetch
       fzf
       git
@@ -52,7 +56,6 @@
       lsd
       lua
       lunarvim
-      nodejs_22
       nvtopPackages.intel
       pkg-config
       python312
@@ -64,34 +67,34 @@
       tealdeer
       tk
       tree-sitter
+      ventoy-full
       wasm-pack
       yt-dlp
       zellij
       zoxide
-
+      # GUI Apps
+      alacritty
       audacity
       bottles
-      brave
-      discord
-      ferium
       handbrake
       haruna
       heroic
+      itch
       kdePackages.koko
       kdePackages.partitionmanager
       keepassxc
       librewolf
       lutris
       obsidian
+      prismlauncher
       protonup
       sameboy
       spotify
       sqlitebrowser
-      ungoogled-chromium
       usbutils
+      vesktop
       vscodium
-      wezterm
-      wine
+      wineWowPackages.stable
       xclicker
     ];
   };
@@ -112,17 +115,6 @@
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF-8";
-      LC_NAME = "en_US.UTF-8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF-8";
-      LC_TELEPHONE = "en_US.UTF-8";
-      LC_TIME = "en_US.UTF-8";
-    };
   };
 
   networking = {
@@ -133,27 +125,25 @@
   nixpkgs.config.allowUnfree = true;
 
   programs = {
+    fish = {
+      enable = true;
+      useBabelfish = true;
+      vendor = {
+        completions.enable = true;
+        config.enable = true;
+        functions.enable = true;
+      };
+    };
     gamemode.enable = true;
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
     nano.enable = false;
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-    };
     steam = {
       enable = true;
       extest.enable = true;
       gamescopeSession.enable = true;
-    };
-    zsh = {
-      enable = true;
-      autosuggestions.enable = true;
-      enableBashCompletion = true;
     };
   };
 
@@ -173,17 +163,22 @@
     mullvad-vpn.enable = true;
     pipewire = {
       enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       jack.enable = true;
+      pulse.enable = true;
     };
-    printing.enable = true;
+    printing = {
+      enable = true;
+      drivers = [ pkgs.brlaser ];
+    };
     xserver = {
       # libinput.enable = true;
       xkb = {
         layout = "us";
-        options = "eurosign:e,caps:escape";
+        options = "eurosign:e, caps:escape";
         variant = "";
       };
     };
@@ -192,23 +187,17 @@
   time.timeZone = "America/New_York";
 
   users = {
-    defaultUserShell = pkgs.zsh;
+    defaultUserShell = pkgs.fish;
     users.reeph = {
       isNormalUser = true;
-      description = "Sanguine";
+      description = "sanguine";
       extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [];
+      packages = []; # with pkgs; [];
     };
   };
 
   virtualisation.virtualbox.host.enable = true;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system = {
     autoUpgrade = {
       enable = true;
@@ -216,6 +205,7 @@
       rebootWindow = { lower = "03:00"; upper = "05:30"; };
     };
     copySystemConfiguration = true;
-    stateVersion = "24.11";# Did you read the comment?
+    stateVersion = "24.11";
   };
 }
+
