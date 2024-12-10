@@ -9,8 +9,7 @@
       availableKernelModules = [ "xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
       kernelModules = [ ];
       luks.devices = {
-        "nix".device = "/dev/disk/by-uuid/3eb4b259-03fc-4999-87c2-8dbe55b42a81";
-        "swap".device = "/dev/disk/by-uuid/72db6411-c8af-4a6b-a6ae-28a2b79bcae2";
+        "nix".device = "/dev/disk/by-uuid/65f9a1ef-f4d2-489f-95ec-41523ab1d53d";
       };
     };
     kernelModules = [ "kvm-intel" ];
@@ -33,6 +32,4 @@
   networking.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  swapDevices = [ { device = "/dev/disk/by-label/SWAP"; } ];
 }

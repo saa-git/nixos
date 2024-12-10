@@ -7,10 +7,7 @@
   ];
 
   boot = {
-    initrd.luks.devices = {
-      "nix".device = "/dev/disk/by-uuid/3eb4b259-03fc-4999-87c2-8dbe55b42a81";
-      "swap".device = "/dev/disk/by-uuid/72db6411-c8af-4a6b-a6ae-28a2b79bcae2";
-    };
+    initrd.luks.devices."nix".device = "/dev/disk/by-uuid/65f9a1ef-f4d2-489f-95ec-41523ab1d53d";
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       efi.canTouchEfiVariables = true;
@@ -35,6 +32,7 @@
     systemPackages = with pkgs; [
       # TESTING
       # CLIs
+      ad
       apple-cursor
       atuin
       bat
@@ -55,20 +53,17 @@
       lazygit
       lsd
       lua
-      lunarvim
       nvtopPackages.intel
       pkg-config
-      python312
-      python312Packages.pynvim
+      python313
+      ripgrep
       ruff
       rustup
-      ripgrep
       starship
       tealdeer
       tk
       tree-sitter
-      ventoy-full
-      wasm-pack
+      ventoy
       yt-dlp
       zellij
       zoxide
@@ -76,20 +71,20 @@
       alacritty
       audacity
       bottles
+      brave
+      gfn-electron
       handbrake
       haruna
       heroic
-      itch
+      # itch
       kdePackages.koko
       kdePackages.partitionmanager
       keepassxc
-      librewolf
       lutris
       obsidian
       prismlauncher
       protonup
       sameboy
-      spotify
       sqlitebrowser
       usbutils
       vesktop
@@ -122,7 +117,7 @@
     networkmanager.enable = true;
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = { allowUnfree = true; };
 
   programs = {
     fish = {
@@ -158,7 +153,6 @@
       enable = true;
       wayland.enable = true;
     };
-    flatpak.enable = true;
     fprintd.enable = true;
     mullvad-vpn.enable = true;
     pipewire = {
@@ -202,10 +196,10 @@
     autoUpgrade = {
       enable = true;
       allowReboot = true;
-      rebootWindow = { lower = "03:00"; upper = "05:30"; };
+      #  rebootWindow = { lower = "03:00"; upper = "05:30"; };
     };
     copySystemConfiguration = true;
-    stateVersion = "24.11";
+    stateVersion = "25.05";
   };
 }
 
