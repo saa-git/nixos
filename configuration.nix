@@ -44,6 +44,7 @@
     systemPackages = with pkgs; [
       # Testing
       # CLIs
+      _7zz
       ## apple-cursor
       atuin
       bat
