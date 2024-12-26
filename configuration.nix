@@ -1,3 +1,7 @@
+# Edit this configuration file to define what should be installed on
+# your system. Help is available in the configuration.nix(5) man page, on
+# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
+
 { config, lib, pkgs, ... }:
 
 {
@@ -7,12 +11,21 @@
   ];
 
   boot = {
-    initrd.luks.devices."nix".device = "/dev/disk/by-uuid/65f9a1ef-f4d2-489f-95ec-41523ab1d53d";
+    initrd.luks.devices = {
+      "swap".device = "/dev/disk/by-uuid/";
+      "root".device = "/dev/disk/by-uuid/";
+      "home".device = "/dev/disk/by-uuid/";
+    };
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
+  };
+
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "us";
   };
 
   documentation.man.man-db.enable = true;
@@ -24,16 +37,14 @@
       kate
       konsole
       kwrited
-      plasma-browser-integration
     ];
     sessionVariables = {
-      STEAM_EXTRA_COMPAT_TOOLS_PATH = "/home/reeph/.steam/root/compatibilitytools.d";
+      STEAM_EXTRA_COMPAT_TOOLS_PATH = "/home/reeph/.local/share/Steam/compatibilitytools.d";
     };
     systemPackages = with pkgs; [
-      # TESTING
+      # Testing
       # CLIs
-      ad
-      apple-cursor
+      ## apple-cursor
       atuin
       bat
       btop
@@ -42,7 +53,6 @@
       dust
       efibootmgr
       evcxr
-      evil-helix
       fastfetch
       fzf
       git
@@ -51,46 +61,53 @@
       go
       gopls
       lazygit
+      linuxKernel.packages.linux_zen.cpupower
       lsd
       lua
+      neovim
+      nodejs_23
       nvtopPackages.intel
-      pkg-config
-      python313
       ripgrep
       ruff
       rustup
+      skim
       starship
       tealdeer
       tk
       tree-sitter
+      uv
+      vagrant
       ventoy
       yt-dlp
       zellij
+      zig
+      zls
       zoxide
       # GUI Apps
-      alacritty
       audacity
       bottles
       brave
+      discord-ptb
       gfn-electron
       handbrake
       haruna
       heroic
-      # itch
+      kdePackages.filelight
       kdePackages.koko
+      kdePackages.kwalletmanager
+      kdePackages.okular
       kdePackages.partitionmanager
       keepassxc
+      kitty
       lutris
       obsidian
       prismlauncher
-      protonup
+      protonup-qt
       sameboy
       sqlitebrowser
-      usbutils
-      vesktop
-      vscodium
       wineWowPackages.stable
       xclicker
+      zed-editor
     ];
   };
 
@@ -105,7 +122,7 @@
       enable = true;
       enable32Bit = true;
     };
-    steam-hardware.enable = true;
+    steam-hardware.enable  = true;
   };
 
   i18n = {
@@ -115,6 +132,10 @@
   networking = {
     hostName = "APOLLO";
     networkmanager.enable = true;
+    # firewall = {
+    #   allowedTCPPorts = [];
+    #   allowedUDPPorts = [];
+    # };
   };
 
   nixpkgs.config = { allowUnfree = true; };
@@ -155,27 +176,26 @@
     };
     fprintd.enable = true;
     mullvad-vpn.enable = true;
+    # openssh.enable = true;
     pipewire = {
       enable = true;
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
       jack.enable = true;
-      pulse.enable = true;
+      # extraConfig.jack = {};
     };
     printing = {
       enable = true;
       drivers = [ pkgs.brlaser ];
     };
-    xserver = {
-      # libinput.enable = true;
-      xkb = {
-        layout = "us";
-        options = "eurosign:e, caps:escape";
-        variant = "";
-      };
+  };
+
+  system = {
+    autoUpgrade = {
+      enable = true;
+      allowReboot = true;
+      rebootWindow = { lower = "03:00"; upper = "05:30"; };
     };
+    copySystemConfiguration = true;
+    stateVersion = "24.11";
   };
 
   time.timeZone = "America/New_York";
@@ -184,22 +204,15 @@
     defaultUserShell = pkgs.fish;
     users.reeph = {
       isNormalUser = true;
-      description = "sanguine";
+      description = "Sanguine";
       extraGroups = [ "networkmanager" "wheel" ];
-      packages = []; # with pkgs; [];
+      # packages = with pkgs; [];
     };
   };
 
-  virtualisation.virtualbox.host.enable = true;
-
-  system = {
-    autoUpgrade = {
-      enable = true;
-      allowReboot = true;
-      #  rebootWindow = { lower = "03:00"; upper = "05:30"; };
-    };
-    copySystemConfiguration = true;
-    stateVersion = "25.05";
+  virtualisation.virtualbox = {
+    guest.enable = true;
+    host.enable = true;
   };
 }
 
