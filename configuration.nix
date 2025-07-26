@@ -1,111 +1,98 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
-    "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/lenovo/thinkpad/t490"
+    <nixos-hardware/lenovo/thinkpad/t490>
     ./hardware-configuration.nix
+    (let
+      module = fetchTarball {
+        name = "source";
+        url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.3-1.tar.gz";
+        sha256 = "sha256-KYMUrTV7H/RR5/HRnjV5R3rRIuBXMemyJzTLi50NFTs=";
+      };
+      lixSrc = fetchTarball {
+        name = "source";
+        url = "https://git.lix.systems/lix-project/lix/archive/2.93.3.tar.gz";
+        sha256 = "sha256-Oqw04eboDM8rrUgAXiT7w5F2uGrQdt8sGX+Mk6mVXZQ=";
+      };
+      in import "${module}/module.nix" { lix = lixSrc; }
+    )
   ];
-
+  
   boot = {
     initrd.luks.devices = {
-      "swap".device = "/dev/disk/by-uuid/";
-      "root".device = "/dev/disk/by-uuid/";
-      "home".device = "/dev/disk/by-uuid/";
+      "luks-c76672c5-ac01-4d02-9fa3-eb2538607d77".device = "/dev/disk/by-uuid/c76672c5-ac01-4d02-9fa3-eb2538607d77";
     };
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       efi.canTouchEfiVariables = true;
-      systemd-boot.enable = true;
+      limine.enable = true;
     };
   };
-
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-  };
-
-  documentation.man.man-db.enable = true;
-
+  
   environment = {
     plasma6.excludePackages = with pkgs.kdePackages; [
-      elisa
       gwenview
       kate
       konsole
       kwrited
     ];
     sessionVariables = {
-      STEAM_EXTRA_COMPAT_TOOLS_PATH = "/home/reeph/.local/share/Steam/compatibilitytools.d";
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
     };
     systemPackages = with pkgs; [
       # Testing
+
       # CLIs
-      _7zz
-      ## apple-cursor
-      atuin
-      bat
+      aerc
       btop
-      clang
-      deno
+      cava
       dust
       efibootmgr
       evcxr
+      eza
       fastfetch
-      fzf
-      git
+      fd
       gh
-      gnumake
-      go
-      gopls
-      lazygit
-      linuxKernel.packages.linux_zen.cpupower
-      lsd
-      lua
-      neovim
-      nodejs_23
+      graphviz
+      helix
+      jre17_minimal
+      jre21_minimal
       nvtopPackages.intel
       ripgrep
-      ruff
-      rustup
-      skim
-      starship
+      shellcheck
       tealdeer
-      tk
+      tk-9_0
       tree-sitter
-      uv
-      vagrant
-      ventoy
+      wl-clip-persist
+      wl-clipboard
       yt-dlp
-      zellij
-      zig
-      zls
-      zoxide
-      # GUI Apps
+      # GUIs
       audacity
       bottles
-      brave
-      discord-ptb
-      gfn-electron
+      kdePackages.filelight
+      ghostty
       handbrake
       haruna
-      heroic
-      kdePackages.filelight
-      kdePackages.koko
-      kdePackages.kwalletmanager
-      kdePackages.okular
-      kdePackages.partitionmanager
+      itch
+      kdePackages.kdenlive
       keepassxc
-      kitty
+      kdePackages.koko
       lutris
+      mangayomi
+      melonDS
+      mgba
+      mullvad-browser
       obsidian
+      kdePackages.partitionmanager
+      ppsspp
       prismlauncher
-      protonup-qt
+      protonup
       sameboy
       sqlitebrowser
+      ungoogled-chromium
+      # ventoy
+      vesktop
       wineWowPackages.stable
       xclicker
       zed-editor
@@ -113,8 +100,8 @@
   };
 
   fonts.packages = with pkgs; [
-    fira-code
-    fira-code-symbols
+    nerd-fonts.geist-mono
+    nerd-fonts.fira-code
   ];
 
   hardware = {
@@ -123,25 +110,42 @@
       enable = true;
       enable32Bit = true;
     };
-    steam-hardware.enable  = true;
+    steam-hardware.enable = true;
   };
-
+  
   i18n = {
     defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
   };
-
+  
   networking = {
-    hostName = "APOLLO";
+    firewall = {
+      # allowedTCPPorts = [ ... ];
+      # allowedUDPPorts = [ ... ];
+    };
+    hostName = "APOLLO-13";
     networkmanager.enable = true;
-    # firewall = {
-    #   allowedTCPPorts = [];
-    #   allowedUDPPorts = [];
-    # };
+    proxy = {
+      # default = "http://user:password@proxy:port/";
+      # noProxy = "127.0.0.1,localhost,internal.domain";
+    };
   };
-
-  nixpkgs.config = { allowUnfree = true; };
-
+  
+  nixpkgs.config.allowUnfree = true;
+  
   programs = {
+    bat.enable = true;
+    firejail.enable = true;
     fish = {
       enable = true;
       useBabelfish = true;
@@ -151,69 +155,88 @@
         functions.enable = true;
       };
     };
+    fzf.fuzzyCompletion = true;
     gamemode.enable = true;
+    git.enable = true;
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
+      # enableSSHSupport = true;
     };
+    java.enable = true;
+    lazygit.enable = true;
     nano.enable = false;
+    starship.enable = true;
     steam = {
       enable = true;
       extest.enable = true;
       gamescopeSession.enable = true;
+      protontricks.enable = true;
     };
-  };
-
-  security = {
-    polkit.enable = true;
-    rtkit.enable = true;
-  };
-
-  services = {
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm = {
+    television = {
       enable = true;
-      wayland.enable = true;
+      enableFishIntegration = true;
     };
+    zoxide = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+  };
+  
+  security.rtkit.enable = true;
+  
+  services = {
+    # Desktop Environment
+    displayManager.sddm.enable = true;
+    desktopManager.plasma6.enable = true;
+    # System Utilites
+    atuin.enable = true;
+    # dante.enable = true;
+    flatpak.enable = true;
     fprintd.enable = true;
     mullvad-vpn.enable = true;
     # openssh.enable = true;
     pipewire = {
       enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
       jack.enable = true;
-      # extraConfig.jack = {};
+      pulse.enable = true;
     };
     printing = {
       enable = true;
-      drivers = [ pkgs.brlaser ];
+      browsed.enable = true;
+      cups-pdf.enable = true;
     };
+    speechd.enable = true;
   };
-
-  system = {
-    autoUpgrade = {
-      enable = true;
-      allowReboot = true;
-      rebootWindow = { lower = "03:00"; upper = "05:30"; };
-    };
-    copySystemConfiguration = true;
-    stateVersion = "24.11";
-  };
+  
+  # Do not change this value without due diligence.
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "25.11";
 
   time.timeZone = "America/New_York";
 
-  users = {
-    defaultUserShell = pkgs.fish;
-    users.reeph = {
-      isNormalUser = true;
-      description = "Sanguine";
-      extraGroups = [ "networkmanager" "wheel" ];
-      # packages = with pkgs; [];
+  users.users.reeph = {
+    isNormalUser = true;
+    description = "Sanguine";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+    ];
+  };
+
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      dockerSocket.enable = true;
+    };
+    virtualbox = {
+      guest.enable = true;
+      host = {
+        enable = true;
+        addNetworkInterface = false;
+        enableKvm = true;
+      };
     };
   };
-
-  virtualisation.virtualbox = {
-    guest.enable = true;
-    host.enable = true;
-  };
 }
-
