@@ -1,6 +1,4 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, ... }: {
   nix = {
     package = pkgs.nixVersions.stable;
     extraOptions = ''
@@ -10,19 +8,6 @@
   
   imports = [
     ./hardware-configuration.nix
-    (let
-      module = fetchTarball {
-        name = "source";
-        url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.3-1.tar.gz";
-        sha256 = "sha256-KYMUrTV7H/RR5/HRnjV5R3rRIuBXMemyJzTLi50NFTs=";
-      };
-      lixSrc = fetchTarball {
-        name = "source";
-        url = "https://git.lix.systems/lix-project/lix/archive/2.93.3.tar.gz";
-        sha256 = "sha256-Oqw04eboDM8rrUgAXiT7w5F2uGrQdt8sGX+Mk6mVXZQ=";
-      };
-      in import "${module}/module.nix" { lix = lixSrc; }
-    )
   ];
   
   boot = {
@@ -39,6 +24,7 @@
       kate
       konsole
       kwrited
+      plasma-integration
     ];
     sessionVariables = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
@@ -93,7 +79,6 @@
       protonup
       sameboy
       sqlitebrowser
-      ungoogled-chromium
       # ventoy
       vesktop
       wineWowPackages.stable
@@ -219,12 +204,15 @@
 
   time.timeZone = "America/New_York";
 
-  users.users.reeph = {
-    isNormalUser = true;
-    description = "Sanguine";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    ];
+  users = {
+    defaultUserShell = pkgs.fish;
+    users.reeph = {
+      isNormalUser = true;
+      description = "Sanguine";
+      extraGroups = [ "networkmanager" "wheel" ];
+      packages = with pkgs; [
+      ];
+    };
   };
 
   virtualisation = {
