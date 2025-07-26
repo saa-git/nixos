@@ -1,8 +1,14 @@
 { config, pkgs, ... }:
 
 {
+  nix = {
+    package = pkgs.nixVersions.stable;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+  
   imports = [
-    <nixos-hardware/lenovo/thinkpad/t490>
     ./hardware-configuration.nix
     (let
       module = fetchTarball {
@@ -20,7 +26,9 @@
   ];
   
   boot = {
-    initrd.luks.devices = { "".device = ""; };
+    initrd.luks.devices = {
+      "luks-c76672c5-ac01-4d02-9fa3-eb2538607d77".device = "/dev/disk/by-uuid/c76672c5-ac01-4d02-9fa3-eb2538607d77";
+    };
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
       efi.canTouchEfiVariables = true;
