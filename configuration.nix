@@ -1,14 +1,14 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+
+{
   nix = {
-    package = pkgs.nixVersions.stable;
+    package = pkgs.nixVersions.git;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
   };
   
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
   
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
@@ -20,78 +20,21 @@
   
   environment = {
     plasma6.excludePackages = with pkgs.kdePackages; [
-      gwenview
       kate
       konsole
       kwrited
-      plasma-integration
     ];
     sessionVariables = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
     };
-    systemPackages = with pkgs; [
-      # Testing
-
-      # CLIs
-      aerc
-      btop
-      cava
-      dust
-      efibootmgr
-      evcxr
-      eza
-      fastfetch
-      fd
-      gh
-      graphviz
-      helix
-      jre17_minimal
-      jre21_minimal
-      nvtopPackages.intel
-      ripgrep
-      shellcheck
-      tealdeer
-      tk-9_0
-      tree-sitter
-      wl-clip-persist
-      wl-clipboard
-      yt-dlp
-      # GUIs
-      audacity
-      bottles
-      kdePackages.filelight
-      ghostty
-      handbrake
-      haruna
-      itch
-      kdePackages.kdenlive
-      keepassxc
-      kdePackages.koko
-      lutris
-      mangayomi
-      melonDS
-      mgba
-      mullvad-browser
-      obsidian
-      kdePackages.partitionmanager
-      ppsspp
-      prismlauncher
-      protonup
-      sameboy
-      sqlitebrowser
-      # ventoy
-      vesktop
-      wineWowPackages.stable
-      xclicker
-      zed-editor
-    ];
+    # systemPackages = with pkgs; [ ];
   };
-
+  
   fonts.packages = with pkgs; [
     nerd-fonts.geist-mono
     nerd-fonts.fira-code
   ];
-
+  
   hardware = {
     bluetooth.enable = true;
     graphics = {
@@ -118,8 +61,8 @@
   
   networking = {
     firewall = {
-      # allowedTCPPorts = [ ... ];
-      # allowedUDPPorts = [ ... ];
+      # allowedTCPPorts = [ ];
+      # allowedUDPPorts = [ ];
     };
     hostName = "APOLLO-13";
     networkmanager.enable = true;
@@ -145,6 +88,7 @@
     };
     fzf.fuzzyCompletion = true;
     gamemode.enable = true;
+    gamescope.enable = true;
     git.enable = true;
     gnupg.agent = {
       enable = true;
@@ -157,7 +101,12 @@
     steam = {
       enable = true;
       extest.enable = true;
-      gamescopeSession.enable = true;
+      gamescopeSession = {
+        enable = true;
+        # args = [ ];
+        # env = [ ]
+        # steamArgs = [ ];
+      };
       protontricks.enable = true;
     };
     television = {
@@ -174,22 +123,26 @@
   
   services = {
     # Desktop Environment
-    displayManager.sddm.enable = true;
     desktopManager.plasma6.enable = true;
-    # System Utilites
-    atuin.enable = true;
-    # dante.enable = true;
+    displayManager.sddm.enable = true;
+    # Utilities
+    # atuin.enable = true;
+    # dante = {
+    #   enable = true;
+    #   config = ""
+    # };
     flatpak.enable = true;
     fprintd.enable = true;
     mullvad-vpn.enable = true;
-    # openssh.enable = true;
+    openssh.enable = true;
     pipewire = {
       enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      jack.enable = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       pulse.enable = true;
-    };
+    };  
     printing = {
       enable = true;
       browsed.enable = true;
@@ -200,21 +153,78 @@
   
   # Do not change this value without due diligence.
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11";
+  system.stateVersion = "25.11"; # Did you read the comment?
 
   time.timeZone = "America/New_York";
-
+  
   users = {
-    defaultUserShell = pkgs.fish;
-    users.reeph = {
-      isNormalUser = true;
-      description = "Sanguine";
-      extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [
-      ];
+    # defaultUserShell = pkgs.fish;
+    users = {
+      reeph = {
+        description = "Sanguine";
+        extraGroups = [ "networkmanager" ];
+        group = "wheel";
+        isNormalUser = true;
+        packages = with pkgs; [
+          # Testing
+          # CLIs
+          aerc
+          atuin
+          btop
+          cava
+          dust
+          efibootmgr
+          evcxr
+          eza
+          fastfetch
+          fd
+          gh
+          graphviz
+          helix
+          jre17_minimal
+          jre21_minimal
+          nixd
+          nvtopPackages.intel
+          ripgrep
+          shellcheck
+          tealdeer
+          tk-9_0
+          tree-sitter
+          wl-clip-persist
+          wl-clipboard
+          yt-dlp
+          # GUIs
+          audacity
+          bottles
+          ghostty
+          handbrake
+          haruna
+          itch
+          keepassxc
+          kdePackages.filelight
+          kdePackages.kdenlive
+          kdePackages.partitionmanager
+          krita
+          librewolf
+          lutris
+          melonDS
+          mgba
+          obsidian
+          ppsspp-sdl
+          prismlauncher
+          protonup
+          sameboy
+          sqlitebrowser
+          # ventoy
+          vesktop
+          wineWow64Packages.stableFull
+          xclicker
+          zed-editor
+        ];
+        shell = pkgs.fish;
+      };
     };
   };
-
   virtualisation = {
     podman = {
       enable = true;
@@ -222,12 +232,8 @@
       dockerSocket.enable = true;
     };
     virtualbox = {
-      guest.enable = true;
-      host = {
-        enable = true;
-        addNetworkInterface = false;
-        enableKvm = true;
-      };
+      # guest.enable = true;
+      host.enable = true;
     };
   };
 }
