@@ -1,12 +1,16 @@
 { config, pkgs, ... }:
 
 {
-  nix = {
-    package = pkgs.nixVersions.git;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
+  nixpkgs.overlays = [ (final: prev: {
+    inherit (final.lixPackageSets.git)
+      nixpkgs-review
+      nix-direnv
+      nix-eval-jobs
+      nix-fast-jobs
+      colmena;
+  }) ];
+
+  nix.package = pkgs.lixPackageSets.git.lix;
   
   imports = [ ./hardware-configuration.nix ];
   
@@ -17,12 +21,15 @@
       limine.enable = true;
     };
   };
+
+  documentation.man.man-db.enable = true;
   
   environment = {
     plasma6.excludePackages = with pkgs.kdePackages; [
       kate
       konsole
       kwrited
+      spectacle
     ];
     sessionVariables = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
@@ -64,7 +71,7 @@
       # allowedTCPPorts = [ ];
       # allowedUDPPorts = [ ];
     };
-    hostName = "APOLLO-13";
+    hostName = "NIKE";
     networkmanager.enable = true;
     proxy = {
       # default = "http://user:password@proxy:port/";
@@ -126,7 +133,6 @@
     desktopManager.plasma6.enable = true;
     displayManager.sddm.enable = true;
     # Utilities
-    # atuin.enable = true;
     # dante = {
     #   enable = true;
     #   config = ""
@@ -169,11 +175,12 @@
           # Testing
           # CLIs
           aerc
-          atuin
+          apple-cursor
           btop
           cava
+          cups-brother-hll2350dw
           dust
-          efibootmgr
+          # efibootmgr
           evcxr
           eza
           fastfetch
@@ -185,17 +192,27 @@
           jre21_minimal
           nixd
           nvtopPackages.intel
+          python313Packages.kde-material-you-colors
+          quickemu
           ripgrep
+          rustup
           shellcheck
+          smartmontools
+          speechd
+          spirv-tools
           tealdeer
           tk-9_0
           tree-sitter
+          wget
           wl-clip-persist
           wl-clipboard
           yt-dlp
           # GUIs
           audacity
+          # azahar
           bottles
+          cider-2
+          gfn-electron
           ghostty
           handbrake
           haruna
@@ -205,6 +222,7 @@
           kdePackages.kdenlive
           kdePackages.partitionmanager
           krita
+          libreoffice-fresh
           librewolf
           lutris
           melonDS
@@ -215,7 +233,7 @@
           protonup
           sameboy
           sqlitebrowser
-          # ventoy
+          # ventoy-full-qt
           vesktop
           wineWow64Packages.stableFull
           xclicker
@@ -230,10 +248,6 @@
       enable = true;
       dockerCompat = true;
       dockerSocket.enable = true;
-    };
-    virtualbox = {
-      # guest.enable = true;
-      host.enable = true;
     };
   };
 }
