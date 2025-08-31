@@ -31,10 +31,17 @@
               home.username = "reeph";
               home.homeDirectory = "/home/reeph";
               programs.home-manager.enable = true;
+              programs.fish.enable = true;
               home.packages = with pkgs; [
                 zen.packages."${system}".twilight
               ];
               home.stateVersion = "25.11";
+              home.sessionPath = [
+                "$ZIR"
+                "$ZLSIR"
+                "~/.nim/bin"
+                "~/.nimble/bin"
+              ];
             };
           }
         ];

@@ -32,7 +32,22 @@
       spectacle
     ];
     sessionVariables = {
-      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/reeph/.steam/root/compatibilitytools.d";
+      # UTILS
+      # 
+      CONFIG = "$HOME/.config";
+      EDITOR = "hx";
+      CODE_EDITOR = "zeditor";
+
+      # ZIG
+      #
+      ZOME = "$HOME/.zig";
+      ZIR = "$ZOME/zig";
+      ZLIR = "$ZOME/zigl";
+      ZLSIR = "$ZOME/zls";
+      
+      # STEAM
+      # 
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "$HOME/.steam/root/compatibilitytools.d";
     };
     # systemPackages = with pkgs; [ ];
   };
@@ -91,6 +106,47 @@
         completions.enable = true;
         config.enable = true;
         functions.enable = true;
+      };
+      shellAbbrs = {
+        # UTILS
+        # 
+        c = "clear";
+        x = "exit";
+        # q = "qs -c ii";
+        rn = "rename";
+        rs = "exec $SHELL";
+        zv = "zig version; zls version";
+        zup = "zigl && zlsl";
+        cat = "bat --paging=never";
+        sql3 = "sqlite3";
+        mkdir = "mkdir -p";
+
+        # CARGO
+        #
+        cga = "cargo add";
+        cgb = "cargo build";
+        cgc = "cargo clean";
+        cgi = "cargo init";
+        cgn = "cargo new";
+        cgr = "cargo run";
+        cgcl = "cargo clippy -- -W clippy::pedantic";
+
+        # MULLVAD VPN
+        #
+        vac = "mullvad auto-connect set";
+        vcc = "mullvad connect -w";
+        vdc = "mullvad disconnect -w";
+        vlg = "mullvad account login < ~/.config/sec/mvvac";
+        vrl = "mullvad relay set location";
+        vsl = "mullvad status listen";
+        vst = "mullvad status";
+      };
+      shellAliases = {
+        ted = "hx";
+        ced = "zeditor";
+        egho = "ted $CONFIG/ghostty/config";
+        egre = "ted $CONFIG/fish/greeting";
+        efsh = "ted $CONFIG/fish/config.fish";
       };
     };
     fzf.fuzzyCompletion = true;
