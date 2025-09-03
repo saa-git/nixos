@@ -266,6 +266,7 @@
                       cat = "bat --paging=never";
                       sql3 = "sqlite3";
                       mkdir = "mkdir -p";
+                      uuids = "lsblk -dno UUID /dev/";
 
                       # CARGO
                       #
@@ -282,7 +283,8 @@
                       vac = "mullvad auto-connect set";
                       vcc = "mullvad connect -w";
                       vdc = "mullvad disconnect -w";
-                      vlg = "mullvad account login < ~/.config/sec/mvvac";
+                      vli = "mullvad account login < ~/.config/sec/mvacc";
+                      vlo = "mullvad account logout";
                       vrl = "mullvad relay set location";
                       vsl = "mullvad status listen";
                       vst = "mullvad status";

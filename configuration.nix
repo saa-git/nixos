@@ -16,8 +16,8 @@
   
   boot = {
     initrd.luks.devices = {
-      # "nixos".device = "";
-      # "swap".device = "";
+      # "swap".device = "/dev/disk/by-uuid/";
+      # "nixos".device = "/dev/disk/by-uuid/";
     };
     kernelPackages = pkgs.linuxPackages_zen;
     loader = {
